@@ -19,12 +19,12 @@ import RetrieveLiveData
 import Stream_Price_
 import Cleans_And_Insert_SymbolData_IntoDB
 import All_Symbols
+import Create_Individual_Symbol_Tables_SQLManager
+
+#allSymbols = All_Symbols.Return_ALL_Symbols_FromDB()
 
 
-allSymbols = All_Symbols.Return_ALL_Symbols_FromDB()
-
-
-
+Create_Individual_Symbol_Tables_SQLManager.Create_Individual_Symbol_Tables_InLootLoader_DB()
 
 #asyncio.run(RetrieveLiveData.MarketDataService.retrieveLiveData(Self))
 
