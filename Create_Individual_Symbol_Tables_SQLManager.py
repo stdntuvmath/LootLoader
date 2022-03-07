@@ -4,8 +4,6 @@ import regex as re
 from time import sleep
 
 
-
-
 def Create_Individual_Symbol_Tables_InLootLoader_DB():
     #database stuff
 
@@ -24,16 +22,12 @@ def Create_Individual_Symbol_Tables_InLootLoader_DB():
 
         makeString = str(i)
         onlySymbol = re.sub('[^a-zA-Z]+', '', makeString) #regex for returning only the upper and lower case letters
-        symbolList.append(onlySymbol)
-
-  
+        symbolList.append(onlySymbol)  
 
     for symbol in symbolList:
+    
+        cursor.execute('CREATE TABLE {} (Symbol nchar, Price float, nTime datetime)'.format(symbol))
+        cursor.commit()
+        sleep(0.2)
 
-        try:
-            cursor.execute('CREATE TABLE {} (Symbol nchar, Price float, nTime datetime)'.format(symbol))
-
-            sleep(0.2)
-
-        except(Error):
-            print('Cannot create tables')
+ 
