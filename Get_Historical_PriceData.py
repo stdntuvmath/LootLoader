@@ -6,77 +6,61 @@ import Documentation.config_TDA_Live as config_TDA_Live
 import pytz
 import All_Symbols
 from os.path import exists
-from time import sleep
+import time
+import datetime
+from Insert_Into_Symbol_Tables import Insert_Symbol_Price_andDateTime_Data
+import Todays_Weekday as tday
+
+
+def Get_Price_Date_InsertInto_DB():
+
+    client = easy_client(
+        api_key=config_TDA_Live.api_key,
+        redirect_uri=config_TDA_Live.redirect_url,
+        token_path=config_TDA_Live.token_path)
+
+
+    allSymbols = All_Symbols.Return_ALL_Symbols_FromDB()
+
+
+    for symbol in allSymbols:
+
+
+        result = client.get_price_history(symbol,
+                                        frequency=Client.PriceHistory.Frequency.EVERY_MINUTE,
+                                        need_extended_hours_data=False,
+                                        start_datetime=datetime.datetime.now(),
+                                        end_datetime=datetime.datetime.now())
+
+
+        pricedata = result.json()
 
 
 
+        for candle in pricedata['candles']:
+            
+            closePrice = candle.pop("close")
 
-client = easy_client(
-    api_key=config_TDA_Live.api_key,
-    redirect_uri=config_TDA_Live.redirect_url,
-    token_path=config_TDA_Live.token_path)
+            epochTime = candle.pop("datetime")
 
+            tz = pytz.timezone('US/Central')
 
-allSymbols = All_Symbols.Return_ALL_Symbols_FromDB()
+            stringLocalTime = str(datetime.datetime.utcfromtimestamp(epochTime / 1000).replace(tzinfo=pytz.utc).astimezone(tz).strftime('%Y%m%d %H:%M:%S'))#from utc to local time
 
-first100 = []
-second100 = []
-counter = 0
+            stringLocalTimeArray = []
 
-# for symbol in allSymbols:
-    
-#     if counter < 101:
-#         first100.append(symbol)
+            stringLocalTimeArray = stringLocalTime.split(" ")
 
-#     if counter > 99 & counter < 201:
-#         second100.append(symbol)
+            localDate = stringLocalTimeArray[0]
+            localTime = stringLocalTimeArray[1]
 
-for symbol in allSymbols:
+            #put into lootloader server
 
+            Insert_Symbol_Price_andDateTime_Data(symbol, closePrice, localDate, localTime)
 
-    result = client.get_price_history(symbol,
-                                    frequency=Client.PriceHistory.Frequency.EVERY_MINUTE,
-                                    need_extended_hours_data=True,
-                                    start_datetime=datetime.now() - timedelta(days=1),
-                                    end_datetime=datetime.now())
+            # #print to terminal
 
-
-    pricedata = result.json()
-
-
-
-    for candle in pricedata['candles']:
-        
-        closePrice = candle.pop("close")
-
-        epochTime = candle.pop("datetime")
-
-        tz = pytz.timezone('US/Central')
-
-        localTime = datetime.utcfromtimestamp(epochTime / 1000).replace(tzinfo=pytz.utc).astimezone(tz).strftime('%H:%M')#from utc to local time
-
-        # priceArray.append(closePrice)
-        # timeArray.append(localTime)
-        # symbolArray.append(stockSymbol)
-
-        closePriceString = "{}, {}, {}\n".format(symbol, closePrice, localTime)
-        #print(closePriceString)
-
-
-        file_exists = exists("PriceData\\{}_priceData.csv".format(symbol))    
-
-        if(file_exists == True):
-
-            outFile = open("PriceData\\{}_priceData.csv".format(symbol), "a")
-            outFile.write("{}".format(closePriceString))
-            outFile.close()            
-
-        else:
-            outFile = open("PriceData\\{}_priceData.csv".format(symbol), "a")
-            outFile.write("{}".format(closePriceString))
-            outFile.close()
-
-        #sleep(0.00001)
+           
 
 
 
@@ -86,48 +70,23 @@ for symbol in allSymbols:
 
 
 
-# for symbol in second100:
 
+            #put into a file
 
-#     result = client.get_price_history(symbol,
-#                                     frequency=Client.PriceHistory.Frequency.EVERY_MINUTE,
-#                                     need_extended_hours_data=True,
-#                                     start_datetime=datetime.now() - timedelta(minutes=200),
-#                                     end_datetime=datetime.now())
+            # closePriceString = "{}, {}, {}\n".format(symbol, closePrice, localTime)
+            # # print(closePriceString)
 
+            # file_exists = exists("PriceData\\{}_priceData.csv".format(symbol))    
 
-#     pricedata = result.json()
+            # if(file_exists == True):
 
+            #     outFile = open("PriceData\\{}_priceData.csv".format(symbol), "a")
+            #     outFile.write("{}".format(closePriceString))
+            #     outFile.close()            
 
+            # else:
+            #     outFile = open("PriceData\\{}_priceData.csv".format(symbol), "a")
+            #     outFile.write("{}".format(closePriceString))
+            #     outFile.close()
 
-#     for candle in pricedata["candles"]:
-        
-#         closePrice = candle.pop("close")
-
-#         epochTime = candle.pop("datetime")
-
-#         tz = pytz.timezone('US/Central')
-
-#         localTime = datetime.utcfromtimestamp(epochTime / 1000).replace(tzinfo=pytz.utc).astimezone(tz).strftime('%H:%M')#from utc to local time
-
-#         # priceArray.append(closePrice)
-#         # timeArray.append(localTime)
-#         # symbolArray.append(stockSymbol)
-
-#         closePriceString = "{}, {}, {}\n".format(symbol, closePrice, localTime)
-#         #print(closePriceString)
-
-
-#         file_exists = exists("PriceData\\{}_priceData.csv".format(symbol))    
-
-#         if(file_exists == True):
-
-#             outFile = open("PriceData\\{}_priceData.csv".format(symbol), "a")
-#             outFile.write("{}".format(closePriceString))
-#             outFile.close()            
-
-#         else:
-#             outFile = open("PriceData\\{}_priceData.csv".format(symbol), "a")
-#             outFile.write("{}".format(closePriceString))
-#             outFile.close()
-
+            #sleep(0.000001)

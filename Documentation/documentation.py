@@ -26,6 +26,23 @@ import sys
 
 
 
+#how to be within market hours
+
+    # startTime = "08:29:55"
+    # endTime = "14:59:00"
+    # now = int(time.time())
+    # today = tday.Get_Todays_Weekday_Name()
+
+    # tz = pytz.timezone('US/Central')
+
+    # localTime = datetime.datetime.utcfromtimestamp(now).replace(tzinfo=pytz.utc).astimezone(tz).strftime('%H:%M:%S')#from utc to local time
+
+
+
+    # while startTime <= now & now < endTime & today !="Saturday" & today != "Sunday":
+
+
+
 print("hello dammit!")
 
 api_key = 'DJWLOEI8U7VIYEGU7KD5HWRDVCKI3L6R'

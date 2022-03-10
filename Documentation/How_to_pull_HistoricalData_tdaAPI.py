@@ -18,9 +18,6 @@ client = client_from_token_file(config_TDA_Live.token_path, config_TDA_Live.api_
 #     token_path=config_TDA_Live.token_path)
 
 
-print(config_TDA_Live.api_key)#correct
-print(config_TDA_Live.redirect_url)#correct
-print(config_TDA_Live.token_path)#correct
 
 result = client.get_price_history('AMD',
                                 frequency=Client.PriceHistory.Frequency.EVERY_MINUTE,

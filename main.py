@@ -16,16 +16,15 @@ import ta
 import asyncio
 import threading
 import RetrieveLiveData
-import Stream_Price_
-import Cleans_And_Insert_SymbolData_IntoDB
 import All_Symbols
-import Create_Individual_Symbol_Tables_SQLManager
+import Get_Historical_PriceData
+import Setup.Create_Symbol_Tables as createTables
+import Setup.Delete_Symbol_Tables_FromDB as deleteTables
 
 #allSymbols = All_Symbols.Return_ALL_Symbols_FromDB()
-
-
-Create_Individual_Symbol_Tables_SQLManager.Create_Individual_Symbol_Tables_InLootLoader_DB()
-
+createTables.CreateTables()
+#deleteTables.DeleteTables()
+#Get_Historical_PriceData.Get_Price_Date_InsertInto_DB()
 #asyncio.run(RetrieveLiveData.MarketDataService.retrieveLiveData(Self))
 
 
