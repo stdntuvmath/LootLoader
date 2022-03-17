@@ -3,11 +3,13 @@
 
 
 
+from textwrap import indent
 from tda.client import Client
 from tda.auth import client_from_token_file
 from datetime import datetime, timedelta
 import config_TDA_Live
-
+from os.path import exists
+import json
 
 
 client = client_from_token_file(config_TDA_Live.token_path, config_TDA_Live.api_key)
@@ -29,4 +31,25 @@ print(result)
 
 pricedata = result.json()
 
-print(pricedata)
+
+priceDate = json.dumps(pricedata, indent=4)
+
+#print(pricedata)
+
+
+        #put into a file
+
+        
+
+file_exists = exists("PriceData\\{}_priceData.json".format('AMD'))    
+
+if(file_exists == True):
+
+    outFile = open("PriceData\\{}_priceData.json".format('AMD'), "a")
+    outFile.write("{}".format(priceDate))
+    outFile.close()            
+
+else:
+    outFile = open("PriceData\\{}_priceData.json".format('AMD'), "a")
+    outFile.write("{}".format(priceDate))
+    outFile.close()

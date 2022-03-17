@@ -26,7 +26,7 @@ import sys
 
 
 
-#how to be within market hours
+#how to be within market hours - this code works!
 
     # startTime = "08:29:55"
     # endTime = "14:59:00"
