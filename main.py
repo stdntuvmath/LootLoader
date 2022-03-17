@@ -19,12 +19,20 @@ import RetrieveLiveData
 import All_Symbols
 import Get_Historical_PriceData
 import Setup.Create_Symbol_Tables as createTables
+import Setup.Create_Symbol_Tables_EMA200 as createTablesEMA200
+import Delete_Table_Data
 import Setup.Delete_Symbol_Tables_FromDB as deleteTables
+import Build_Initial_EMA200
 
-#allSymbols = All_Symbols.Return_ALL_Symbols_FromDB()
-createTables.CreateTables()
+#createTables.CreateTables()
+#createTablesEMA200.CreateTables()
+#Delete_Table_Data.ClearTables()
 #deleteTables.DeleteTables()
+
 #Get_Historical_PriceData.Get_Price_Date_InsertInto_DB()
+
+Build_Initial_EMA200.Get_HistoricalData_InsertInto_DB()
+
 #asyncio.run(RetrieveLiveData.MarketDataService.retrieveLiveData(Self))
 
 
