@@ -11,6 +11,10 @@ import time
 import datetime
 import Insert_Into_Symbol_Tables
 import Todays_Weekday as tday
+import Calculate_EMA200
+import Calculate_Angle_of_EMA200
+import Calculate_Standard_Dev
+import Calculate_EMA200AngleMean
 
 
 #NOTES for Client.get_price_history
@@ -91,17 +95,24 @@ def Get_HistoricalData_InsertInto_DB():
 
 
     allSymbols = All_Symbols.Return_ALL_Symbols_FromDB()
-    counter1=0
+    counter_ofSymbols=0
     
 
     previousEma200Value = 0
     newEma200Value=0
-    timeDataArray = []
-    
+
+    previousEMA200AngleValue = 0
+    newEMA200AngleValue = 0
+
+    ema200AngleArray = []
+
+    standardDev=0
+
+    EMA200Array = []
 
 
     for symbol in allSymbols:
-        if(counter1 < 10):
+        if(counter_ofSymbols < 50):
             try:
                 result = client.get_price_history(symbol,
                                                 
@@ -120,7 +131,8 @@ def Get_HistoricalData_InsertInto_DB():
     
             #convert to json
             pricedata = result.json()
-            counter=0
+            counter_ofDataPoints=0
+            counter_ofAnglePoints=0
 
             #print(pricedata)
 
@@ -129,7 +141,7 @@ def Get_HistoricalData_InsertInto_DB():
             # #parse json data
             for candle in pricedata['candles']:                
                 closePrice = candle.get("close","")
-                if counter >= 1000:
+                if counter_ofDataPoints >= 1000:
                     #print(symbol, newEma200Value)
                     file_exists = exists("PriceData\\{}_priceData.csv".format(symbol))    
 
@@ -143,8 +155,36 @@ def Get_HistoricalData_InsertInto_DB():
                         outFile = open("PriceData\\{}_priceData.csv".format(symbol), "a")
                         outFile.write("{}".format(closePriceString))
                         outFile.close()
-                newEma200Value = Get_NewestEMA200_Method(previousEma200Value,closePrice)
-                #print(newEma200Value)
+
+
+            
+                newEma200Value = Calculate_EMA200.Get_NewestEMA200_Method(previousEma200Value,closePrice)
+
+
+      
+                newEMA200AngleValue = Calculate_Angle_of_EMA200.CalculateAngle(newEma200Value, previousEma200Value)
+
+
+
+                ema200AngleArray.append(newEMA200AngleValue)
+
+                if(len(ema200AngleArray) > 120):
+                    ema200AngleArray.remove(ema200AngleArray[0])
+                    standardDev = Calculate_Standard_Dev.Return_Standard_Dev_of_Angle_of_EMA200(ema200AngleArray)
+
+                standardDev2 = standardDev*2
+                standardDev3 = standardDev*3
+                standardDev4 = standardDev*4
+                standardDev5 = standardDev*5
+                standardDev6 = standardDev*6
+                standardDev7 = standardDev*7
+                standardDev8 = standardDev*8
+                standardDev9 = standardDev*9
+                standardDev10 = standardDev*10
+
+
+                counter_ofAnglePoints+=1
+
                 epochTime = candle.get("datetime","")
 
                 tz = pytz.timezone('US/Central')
@@ -164,6 +204,8 @@ def Get_HistoricalData_InsertInto_DB():
                 #Insert_Into_Symbol_Tables.Insert_Symbol_EMA200_andDateTime_Data(symbol, newEma1000Value, localDate, localTime)
 
                 previousEma200Value = newEma200Value
+                previousEMA200AngleValue = newEMA200AngleValue
+
                 #suggestions from David Sedivy at the math center
                 #except TYPE:
 
@@ -172,7 +214,9 @@ def Get_HistoricalData_InsertInto_DB():
 
                 # #print to terminal
             
-                closePriceString = "{}, {}, {}, {}, {}, {}\n".format(counter, symbol, closePrice, previousEma200Value, localDate, localTime)
+                closePriceString = "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}\n".format(counter_ofDataPoints, symbol, closePrice, previousEma200Value,previousEMA200AngleValue, standardDev10, standardDev9, standardDev8, standardDev7, standardDev6, standardDev5, standardDev4, standardDev3, standardDev2, standardDev, localDate, localTime)
+
+                #closePriceString = "{}, {}, price: {}, EMA200: {}, AngleEMA200: {}, StandardDev: {}, {}, {}\n".format(counter_ofDataPoints, symbol, closePrice, previousEma200Value,previousEMA200AngleValue, standardDev, localDate, localTime)
                 #print(closePriceString)
 
 
@@ -200,14 +244,16 @@ def Get_HistoricalData_InsertInto_DB():
                 # counter = counter+1
                 # print(counter)
                 # print(result)
-                counter+=1
+                counter_ofDataPoints+=1
 
 
 
-        counter1+=1
-        previousEma1000Value = 0
+        counter_ofSymbols+=1
 
 
+        previousEma200Value = 0
+        previousEMA200AngleValue = 0
+        EMA200Array.clear()
                 #put into a file
 
 
@@ -217,9 +263,3 @@ def Get_HistoricalData_InsertInto_DB():
 
 
 
-def Get_NewestEMA200_Method(previousEMA200Value, newPrice):
-
-    alpha = 2/(200+1)
-    ema1000Now = previousEMA200Value + alpha*(newPrice-previousEMA200Value)
-
-    return ema1000Now
