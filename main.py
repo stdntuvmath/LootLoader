@@ -1,7 +1,10 @@
-from __future__ import print_function
+from tkinter import *
 from logging import exception
 import os
+from time import sleep
+from tkinter.ttk import PanedWindow
 from typing_extensions import Self
+from matplotlib.widgets import Widget
 from tda import auth, client, orders
 import json
 import pandas as pd
@@ -22,94 +25,46 @@ import Setup.Create_Symbol_Tables as createTables
 import Setup.Create_Symbol_Tables_EMA200 as createTablesEMA200
 import Delete_Table_Data
 import Setup.Delete_Symbol_Tables_FromDB as deleteTables
-import Build_Initial_EMA200
-
-#createTables.CreateTables()
-#createTablesEMA200.CreateTables()
-#Delete_Table_Data.ClearTables()
-#deleteTables.DeleteTables()
-
-#Get_Historical_PriceData.Get_Price_Date_InsertInto_DB()
-
-Build_Initial_EMA200.Get_HistoricalData_InsertInto_DB()
-
-#asyncio.run(RetrieveLiveData.MarketDataService.retrieveLiveData(Self))
-
-
-#array = {"AMD","BASE"}
-
-#RetrievePolygonMarketHistory.retrievePolygonMarketHistory(array)
+import TurnerBands
+import Realtime_Data
+import datetime
+import Todays_Weekday
+import time
+import pytz
 
 
 
-#pull all symbols above the EMA200
-
-#stream price data for each symbol
-
-#check current price position relative to price[3], price[6], price[9] for each symbol
-
-#get ema200 value for each symbol
-
-#calculate ema200 angle for each symbol
-
-#check ema200 angle relative to turner bands for each symbol
+#first get and store necessary historical data to produce accurate real time data. 
 
 
+#while within business hours, get realtime data
+todaysDate = datetime.date.today()
+startTime = datetime.datetime.strptime(str(todaysDate)+" 08:30:15",'%Y-%m-%d %H:%M:%S')
+endTime = datetime.datetime.strptime(str(todaysDate)+" 14:59:00",'%Y-%m-%d %H:%M:%S')
+now = datetime.datetime.now()
+today = Todays_Weekday.Get_Todays_Weekday_Name()
 
-#c = OAuth_Authenticate.Authenticate()#Call Authenticate method
+if(startTime <= now and now < endTime and today !="Saturday" and today != "Sunday"):
 
-#----------------------------------------------------------------------------------------------------------asyncio.run(Stream_Price_.read_stream())
-
-#asyncio.get_running_loop(Stream_Price_.read_stream()).stop(Stream_Price_.read_stream())
-
-#Pull_Symbols_FromTOScsv.Pull_Symbols()#returns a dict object
-
-#symbolList = "AMD,BASE"
-
-#asyncio.run(Stream_Price_FromSymbol.read_stream())
-
-
-# try asyncio.gather()
-
-# MalachiConstant — Today at 4:41 PM
-# @stdntuvmath I think your methodology is flawed, your streams will run forever until you stop them (or tda closes them).  You need one stream reader and have it handle everything.  If you need to have multiple tasks running look into asyncio.gather()
-
-#Get_Symbol_ClosePrice_Timestamp.Get_ClosePrice_Timestamp("AMD")
-
-
-
-
-#parse the nested json data into a pandas dataFrame
-# pandasDF = pd.json_normalize(dictionary, record_path=['candles'])
-# pandasDF.info()
-
-#print(dictionary["candles"][5]["close"])
-
-#gets the close prices from all the candles from the dictionary json object via python
-# for key, values in dictionary.items():
-#     for i in range(len(dictionary["data"]["table"]["rows"])):
-
-#         #candleEpochTime = dictionary["candles"][i]["datetime"]
-
-#         #candleEpochTime = int(dictionary["candles"][i]["datetime"])
-#         #candleEpochTimeFloat = float(candleEpochTime)
-#         #currentLocalTimeFromCurrentEpochTime = time.ctime(candleEpochTimeFloat)
-#         #currentLocalTimeFromCurrentEpochTime = datetime.datetime.fromtimestamp(candleEpochTime).strftime('%Y-%m-%d %H:%M:%S')
+    while startTime <= now and now < endTime and today !="Saturday" and today != "Sunday":
         
-#         print("{}".format(dictionary["data"]["table"]["rows"][i]["symbol"]))
-# print(len(dictionary["data"]["table"]["rows"]))
-# if(dictionary["empty"]==True):
-#     os.remove("PriceData\\{}_priceData.json".format(symbol))
-#     print("\n\nSymbol: {} returned no price data for evaluation.\n\n".format(symbol))
+        now = datetime.datetime.now()
+        print(now)
+        Realtime_Data.Get_Price_Data(10)
+        sleep(5)
 
+    print("\n\n\nEnd Of Market Day.\n\n\nLootLoader powering down...")
+else:
+    #
+    window = Tk()
+    window.geometry("300x200+500+150")#position of screen
+    window.title("Stock Market is Closed")
+    
 
+    screenLable = Label(text="The stock market is closed at the moment. Please try LootLoader again during market hours: 8:30AM-3:00PM, Monday through Friday.", fg="black",width=50, height=50, wraplength=225)
+    screenLable.pack(fill= BOTH, expand= True, padx= 20, pady=20)
+    window.mainloop()
+    
 
+#TurnerBands.Run_TurnerBands()
 
-# with open("priceData.json", "r") as file:
-#     data=file.read()
-
-
-
-# dictionary = json.loads(data)
-
-# print(type(str))
