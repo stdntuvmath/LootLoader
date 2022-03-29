@@ -47,7 +47,7 @@ def Get_Historical_Data_Insert_IntoDB(numberOfSymbols):
                 result = client.get_price_history(symbol,
                                                 
                         frequency=Client.PriceHistory.Frequency.EVERY_MINUTE,# a candle is formed every minute
-                        need_extended_hours_data=True,
+                        need_extended_hours_data=True,#stuff
                         start_datetime=datetime.datetime.now() - datetime.timedelta(weeks=4),
                         end_datetime=datetime.datetime.now() - datetime.timedelta(days=1))
 
