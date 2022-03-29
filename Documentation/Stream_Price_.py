@@ -18,8 +18,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytz
 import datetime
-import NASDAQ_Symbols
-import NYSE_Symbols
 import asyncio
 import Stream_Price_
 

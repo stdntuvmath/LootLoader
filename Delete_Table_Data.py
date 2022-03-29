@@ -6,9 +6,9 @@ def ClearTables():
     #database stuff
 
     LootLoaderDBConnection = pyodbc.connect('Driver={SQL Server};'
-                        'Server=DESKTOP-8KIMCEV\SQLEXPRESS;'
-                        'Database=LootLoader;'
-                        'Trusted_Connection=yes;')
+                                            'Server=DESKTOP-8KIMCEV\SQLEXPRESS;'
+                                            'Database=LootLoader;'
+                                            'Trusted_Connection=yes;')
 
     cursor = LootLoaderDBConnection.cursor()
 
@@ -26,10 +26,10 @@ def ClearTables():
     #delete tables
     for symbol in symbolList:
 
-        cursor.execute('DELETE {}'.format(symbol))
+        cursor.execute('DELETE {}_Historical'.format(symbol))
         cursor.commit()
 
-        cursor.execute('DELETE {}_EMA200'.format(symbol))
-        cursor.commit()
+        # cursor.execute('DELETE {}_EMA200'.format(symbol))
+        # cursor.commit()
 
     cursor.close()

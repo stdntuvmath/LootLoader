@@ -1,0 +1,9 @@
+import Cleans_And_Insert_SymbolData_IntoDB
+import Delete_Specified_Tables_FromDB
+import Delete_All_Tables_FromDB
+import Create_TurnerBand_Tables
+
+
+#Delete_All_Tables_FromDB.Delete_All_Tables()
+Create_TurnerBand_Tables.Create_TurnerBand_Account_Tables()
+#Delete_Specified_Tables_FromDB.Delete_BuyPrice_Tables()

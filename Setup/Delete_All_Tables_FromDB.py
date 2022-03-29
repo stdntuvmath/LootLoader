@@ -2,7 +2,7 @@ import pyodbc
 import regex as re
 
 
-def DeleteTables():
+def Delete_All_Tables():
     #database stuff
 
     LootLoaderDBConnection = pyodbc.connect('Driver={SQL Server};'
@@ -26,7 +26,13 @@ def DeleteTables():
     #delete tables
     for symbol in symbolList:
 
-        cursor.execute('DROP TABLE {}'.format(symbol))
+        # cursor.execute('DROP TABLE {}'.format(symbol))
+        # cursor.commit()
+
+        # cursor.execute('DROP TABLE {}_EMA200'.format(symbol))
+        # cursor.commit()
+
+        cursor.execute('DROP TABLE {}_Historical'.format(symbol))
         cursor.commit()
 
     cursor.close()
